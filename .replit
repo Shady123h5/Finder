@@ -1,0 +1,54 @@
+entrypoint = "index.js"
+modules = ["nodejs-22", "python-3.11"]
+hidden = [".config", "package-lock.json"]
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+
+[nix]
+channel = "stable-24_11"
+
+[deployment]
+run = ["python", "main.py"]
+deploymentTarget = "vm"
+ignorePorts = false
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Discord Forwarder"
+
+[[workflows.workflow]]
+name = "Discord Forwarder"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[userenv]
+
+[userenv.shared]
+WEBHOOK_7 = "https://discord.com/api/webhooks/1466535574461743329/lywJtS9_2MCWi4cuD2hNAtYQMO9IiA3k-xsgKlrt0OtFO4ZU9bxICGY38EqhjhVGIsi3"
+WEBHOOK_8 = "https://discord.com/api/webhooks/1465402005185888368/vdtoWjFWyN5-GCp_zM-5I4SEiBq_yBmbwpR5fHQqZbSgAWG4SjVdooVgp5KHHiqe13tS"

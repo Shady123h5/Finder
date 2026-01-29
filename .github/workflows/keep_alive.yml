@@ -1,0 +1,13 @@
+name: Wake up Replit
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Pings every 5 minutes
+  workflow_dispatch:      # Allows manual testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Replit URL
+        run: |
+          curl -s https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/

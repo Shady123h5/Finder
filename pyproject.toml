@@ -1,0 +1,11 @@
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Bot."
+requires-python = ">=3.11"
+dependencies = [
+    "discord.py-self>=2.1.0",
+    "flask>=3.1.2",
+    "aiohttp>=3.9.0",
+    "protobuf>=5.29.5,<6.33.4",
+]
