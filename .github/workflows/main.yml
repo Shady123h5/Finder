@@ -2,7 +2,7 @@ name: Discord Bot 24/7
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # Restarts every 15 minutes to stay alive
+    - cron: '*/15 * * * *'
   workflow_dispatch:
   push:
     branches: [ main ]
@@ -11,6 +11,9 @@ jobs:
   run-bot:
     runs-on: ubuntu-latest
     timeout-minutes: 350
+    concurrency:
+      group: discord-bot
+      cancel-in-progress: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
