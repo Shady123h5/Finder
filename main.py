@@ -168,16 +168,22 @@ class MyClient(discord.Client):
         # Debug print for every message received
         print(f"Received message in channel {message.channel.id} from {message.author} (Bot: {message.author.bot})")
         
-        # Ensure we are looking at the right channel ID
-        if message.channel.id not in CHANNEL_CONFIGS:
-            # Check if it's a digit vs int issue or similar
-            if str(message.channel.id) in [str(k) for k in CHANNEL_CONFIGS.keys()]:
-                print(f"DEBUG: Found channel ID match via string conversion for {message.channel.id}")
-            return
+        # Check for both int and string match just in case
+        target_channel = message.channel.id
+        if target_channel not in CHANNEL_CONFIGS:
+            # Try to find a match if the IDs were copied slightly wrong
+            for config_id in CHANNEL_CONFIGS.keys():
+                if str(config_id) in str(target_channel) or str(target_channel) in str(config_id):
+                    print(f"DEBUG: Found partial channel ID match: {target_channel} vs config {config_id}")
+                    target_channel = config_id
+                    break
+            else:
+                return
+        
         if not self.session:
             return
 
-        webhook_url = CHANNEL_CONFIGS[message.channel.id]
+        webhook_url = CHANNEL_CONFIGS[target_channel]
         if not webhook_url:
             return
 
