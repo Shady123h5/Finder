@@ -185,39 +185,11 @@ class MyClient(discord.Client):
             "avatar_url": str(message.author.display_avatar.url)
         }
 
-        # Handle links to make them more professional/prominent
-        link_pattern = re.compile(r'https?://[^\s]+')
-        links = link_pattern.findall(content)
+        # Remove specific link handling and big button for professional webhooks
+        # Simply pass through the original message structure with name/avatar replacements
         
-        main_embed = None
-        # Check if it's the professional webhook by looking at the secret value
-        # or the variable name from CHANNEL_CONFIGS
-        target_webhook = "https://discord.com/api/webhooks/1466535574461743329/lywJtS9_2MCWi4cuD2hNAtYQMO9IiA3k-xsgKlrt0OtFO4ZU9bxICGY38EqhjhVGIsi3"
-
-        if links and webhook_url == target_webhook:
-            main_link = links[0]
-            # Create a dedicated "Big Button" embed
-            main_embed = {
-                "title": "⚡ QUICK ACCESS LINK",
-                "description": f"```\n{main_link}\n```\n# [➤ CLICK HERE TO OPEN]({main_link})\n\n> *Click the large text above to open the link instantly.*",
-                "color": 0x00ff00, # Bright green for visibility
-                "author": {
-                    "name": "Link Assistant",
-                    "icon_url": "https://cdn-icons-png.flaticon.com/512/3522/3522491.png"
-                },
-                "footer": {
-                    "text": "Kyron Notifier • High Priority",
-                    "icon_url": "https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/static/standard-1_1769351762261.gif"
-                }
-            }
-            # Remove the link from content to avoid clutter
-            payload["content"] = content.replace(main_link, "⤵️ **Link moved to the highlighted box below**")
-
         # Combine embeds
         final_embeds = []
-        if main_embed:
-            final_embeds.append(main_embed)
-
         if message.embeds:
             for embed in message.embeds:
                 embed_dict: dict[str, Any] = embed.to_dict()
@@ -226,7 +198,7 @@ class MyClient(discord.Client):
                 if "color" not in embed_dict:
                     embed_dict["color"] = 0x2b2d31 # Dark professional color
                 
-                # Footer icon link needs to be absolute for some Discord clients
+                # Footer icon link
                 icon_url = "https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/static/standard-1_1769351762261.gif"
                 
                 embed_dict["footer"] = {
