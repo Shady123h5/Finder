@@ -22,7 +22,7 @@ CHANNEL_CONFIGS: dict[int, str | None] = {
     1457456645134221365: os.environ.get("WEBHOOK_5"),
     1457686769905434701: os.environ.get("WEBHOOK_6"),
     1452605821744840714: os.environ.get("WEBHOOK_7"),
-    1458848495619543040: os.environ.get("WEBHOOK_NEW"),
+    1458848495619543040: os.environ.get("WEBHOOK_7"),
     1465376509555376218: os.environ.get("WEBHOOK_8"),
 }
 

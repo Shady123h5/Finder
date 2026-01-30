@@ -37,6 +37,5 @@ jobs:
           WEBHOOK_5: ${{ secrets.WEBHOOK_5 }}
           WEBHOOK_6: ${{ secrets.WEBHOOK_6 }}
           WEBHOOK_7: ${{ secrets.WEBHOOK_7 }}
-          WEBHOOK_NEW: ${{ secrets.WEBHOOK_NEW }}
           WEBHOOK_8: ${{ secrets.WEBHOOK_8 }}
           GITHUB_ACTIONS: "true"
