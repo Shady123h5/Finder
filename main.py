@@ -166,7 +166,7 @@ class MyClient(discord.Client):
 
     async def on_message(self, message: discord.Message) -> None:
         # Debug print for every message received
-        print(f"Received message in channel {message.channel.id} from {message.author}")
+        print(f"Received message in channel {message.channel.id} from {message.author} (Bot: {message.author.bot})")
         
         if message.channel.id not in CHANNEL_CONFIGS:
             return
@@ -177,52 +177,58 @@ class MyClient(discord.Client):
         if not webhook_url:
             return
 
-        content = advanced_replace(message.content) if message.content else ""
+        # Handle rate limiting with exponential backoff
+        for attempt in range(3):
+            content = advanced_replace(message.content) if message.content else ""
 
-        payload: dict[str, Any] = {
-            "content": content,
-            "username": "Kyron notifier",
-            "avatar_url": str(message.author.display_avatar.url)
-        }
+            payload: dict[str, Any] = {
+                "content": content,
+                "username": "Kyron notifier",
+                "avatar_url": str(message.author.display_avatar.url)
+            }
 
-        # Remove specific link handling and big button for professional webhooks
-        # Simply pass through the original message structure with name/avatar replacements
-        
-        # Combine embeds
-        final_embeds = []
-        if message.embeds:
-            for embed in message.embeds:
-                embed_dict: dict[str, Any] = embed.to_dict()
-                
-                # Make embed more professional
-                if "color" not in embed_dict:
-                    embed_dict["color"] = 0x2b2d31 # Dark professional color
-                
-                # Footer icon link
-                icon_url = "https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/static/standard-1_1769351762261.gif"
-                
-                embed_dict["footer"] = {
-                    "text": "Kyron Notifier • Made by xvshady and _gg",
-                    "icon_url": icon_url
-                }
-                
-                replace_in_dict(embed_dict)
-                final_embeds.append(embed_dict)
-        
-        if final_embeds:
-            payload["embeds"] = final_embeds[:10]
-        
-        # Clean up payload if no embeds and no content
-        if not payload.get("content") and not payload.get("embeds"):
-            return
+            # Combine embeds
+            final_embeds = []
+            if message.embeds:
+                for embed in message.embeds:
+                    embed_dict: dict[str, Any] = embed.to_dict()
+                    
+                    # Make embed more professional
+                    if "color" not in embed_dict:
+                        embed_dict["color"] = 0x2b2d31 # Dark professional color
+                    
+                    # Footer icon link
+                    icon_url = "https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/static/standard-1_1769351762261.gif"
+                    
+                    embed_dict["footer"] = {
+                        "text": "Kyron Notifier • Made by xvshady and _gg",
+                        "icon_url": icon_url
+                    }
+                    
+                    replace_in_dict(embed_dict)
+                    final_embeds.append(embed_dict)
+            
+            if final_embeds:
+                payload["embeds"] = final_embeds[:10]
+            
+            # Clean up payload if no embeds and no content
+            if not payload.get("content") and not payload.get("embeds"):
+                return
 
-        try:
-            async with self.session.post(webhook_url, json=payload) as resp:
-                if resp.status >= 400:
-                    text = await resp.text()
-                    print(f'Webhook error {resp.status}: {text}')
-        except Exception as e:
-            print(f'Error forwarding: {e}')
+            try:
+                async with self.session.post(webhook_url, json=payload) as resp:
+                    if resp.status == 429:
+                        retry_after = (await resp.json()).get("retry_after", 1)
+                        print(f"Rate limited. Retrying after {retry_after}s...")
+                        await asyncio.sleep(retry_after)
+                        continue
+                    elif resp.status >= 400:
+                        text = await resp.text()
+                        print(f'Webhook error {resp.status} in channel {message.channel.id}: {text}')
+                    break
+            except Exception as e:
+                print(f'Error forwarding: {e}')
+                break
 
 
 async def main() -> None:
