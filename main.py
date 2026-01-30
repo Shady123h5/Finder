@@ -22,7 +22,7 @@ CHANNEL_CONFIGS: dict[int, str | None] = {
     1457456645134221365: os.environ.get("WEBHOOK_5"),
     1457686769905434701: os.environ.get("WEBHOOK_6"),
     1452605821744840714: os.environ.get("WEBHOOK_7"),
-    1458848495619543040: os.environ.get("WEBHOOK_7"),
+    1458848495619543040: os.environ.get("WEBHOOK_NEW"),
     1465376509555376218: os.environ.get("WEBHOOK_8"),
 }
 
@@ -166,24 +166,14 @@ class MyClient(discord.Client):
 
     async def on_message(self, message: discord.Message) -> None:
         # Debug print for every message received
-        print(f"Received message in channel {message.channel.id} from {message.author} (Bot: {message.author.bot})")
+        print(f"Received message in channel {message.channel.id} from {message.author}")
         
-        # Check for both int and string match just in case
-        target_channel = message.channel.id
-        if target_channel not in CHANNEL_CONFIGS:
-            # Try to find a match if the IDs were copied slightly wrong
-            for config_id in CHANNEL_CONFIGS.keys():
-                if str(config_id) in str(target_channel) or str(target_channel) in str(config_id):
-                    print(f"DEBUG: Found partial channel ID match: {target_channel} vs config {config_id}")
-                    target_channel = config_id
-                    break
-            else:
-                return
-        
+        if message.channel.id not in CHANNEL_CONFIGS:
+            return
         if not self.session:
             return
 
-        webhook_url = CHANNEL_CONFIGS[target_channel]
+        webhook_url = CHANNEL_CONFIGS[message.channel.id]
         if not webhook_url:
             return
 
