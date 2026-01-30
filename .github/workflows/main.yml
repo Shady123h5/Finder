@@ -2,12 +2,15 @@ name: Discord Bot 24/7
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Restarts every 6 hours
-  workflow_dispatch: # Allows manual start
+    - cron: '*/15 * * * *' # Restarts every 15 minutes to stay alive
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,6 +26,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Discord Bot
+        timeout-minutes: 340
         run: python main.py
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
