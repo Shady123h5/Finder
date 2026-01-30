@@ -166,9 +166,13 @@ class MyClient(discord.Client):
 
     async def on_message(self, message: discord.Message) -> None:
         # Debug print for every message received
-        print(f"Received message in channel {message.channel.id} from {message.author}")
+        print(f"Received message in channel {message.channel.id} from {message.author} (Bot: {message.author.bot})")
         
+        # Ensure we are looking at the right channel ID
         if message.channel.id not in CHANNEL_CONFIGS:
+            # Check if it's a digit vs int issue or similar
+            if str(message.channel.id) in [str(k) for k in CHANNEL_CONFIGS.keys()]:
+                print(f"DEBUG: Found channel ID match via string conversion for {message.channel.id}")
             return
         if not self.session:
             return
