@@ -198,9 +198,15 @@ class MyClient(discord.Client):
                 if "color" not in embed_dict:
                     embed_dict["color"] = 0x2b2d31 # Dark professional color
                 
-                # Footer icon link
+                # GIF/Icon replacement
                 icon_url = "https://7772c203-dbb6-4da9-a38c-8a330b69e346-00-1ievmmz7y5kbf.picard.replit.dev/static/standard-1_1769351762261.gif"
                 
+                # Replace large images/thumbnails if they exist (the "GIF up close")
+                if "image" in embed_dict:
+                    embed_dict["image"]["url"] = icon_url
+                if "thumbnail" in embed_dict:
+                    embed_dict["thumbnail"]["url"] = icon_url
+
                 embed_dict["footer"] = {
                     "text": "Kyron Notifier • Made by xvshady and _gg",
                     "icon_url": icon_url
