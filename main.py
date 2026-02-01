@@ -182,7 +182,7 @@ class MyClient(discord.Client):
 
         payload: dict[str, Any] = {
             "content": content,
-            "username": "Kyron notifier",
+            "username": "KYRON FINDER",
             "avatar_url": str(message.author.display_avatar.url)
         }
 
