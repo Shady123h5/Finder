@@ -24,6 +24,7 @@ CHANNEL_CONFIGS: dict[int, str | None] = {
     1452605821744840714: os.environ.get("WEBHOOK_7"),
     1458848495619543040: os.environ.get("WEBHOOK_NEW"),
     1465376509555376218: os.environ.get("WEBHOOK_8"),
+    1466731840265261169: os.environ.get("WEBHOOK_9"),
 }
 
 for channel_id, webhook in CHANNEL_CONFIGS.items():
