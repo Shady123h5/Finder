@@ -90,6 +90,7 @@ MATH_TO_ASCII: dict[str, str] = {
 REPLACEMENTS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"Denkai", re.IGNORECASE), "Kyron"),
     (re.compile(r"Thanh?Lamdwcute", re.IGNORECASE), "xvshady and _gg"),
+    (re.compile(r"Mango Hub NOTIFIER 🔔", re.IGNORECASE), "KYRON FINDER"),
 ]
 
 
